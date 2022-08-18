@@ -1,0 +1,21 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t client-dev -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true client-dev npm test
+
+after_success:
+  - docker build -t mindaras/multi-nginx ./nginx
+  - docker build -t mindaras/multi-client ./client
+  - docker build -t mindaras/multi-server ./server
+  - docker build -t mindaras/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push mindaras/multi-nginx
+  - docker push mindaras/multi-client
+  - docker push mindaras/multi-server
+  - docker push mindaras/multi-worker
