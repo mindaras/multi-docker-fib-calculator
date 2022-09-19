@@ -19,3 +19,15 @@ after_success:
   - docker push mindaras/multi-client
   - docker push mindaras/multi-server
   - docker push mindaras/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-1
+  app: multi-container
+  env: Multicontainer-env
+  bucket_name: elasticbeanstalk-eu-central-1-522714423525
+  bucket_path: multi-container
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
